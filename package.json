@@ -1,0 +1,18 @@
+{
+  "name": "discord-js-handler",
+  "version": "1.0.0",
+  "description": "Production-ready Discord.js v14 bot handler with slash commands, event system, and modular architecture",
+  "main": "src/bot.js",
+  "scripts": {
+    "start": "node src/bot.js",
+    "dev": "node --watch src/bot.js",
+    "deploy": "node src/deploy-commands.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.3.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
