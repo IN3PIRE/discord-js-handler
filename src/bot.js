@@ -12,28 +12,42 @@ const client = new Client({
 });
 
 client.commands = new Collection();
-const commandsPath = path.join(__dirname, 'commands');
-const commandFiles = fs.readdirSync(commandsPath).filter(f => f.endsWith('.js'));
+client.prefixCommands = new Collection();
 
-for (const file of commandFiles) {
-  const filePath = path.join(commandsPath, file);
-  const command = require(filePath);
-  if ('data' in command && 'execute' in command) {
-    client.commands.set(command.data.name, command);
+const loadCommands = (dir, collection) => {
+  const fullPath = path.join(__dirname, dir);
+  if (!fs.existsSync(fullPath)) return;
+  
+  const files = fs.readdirSync(fullPath).filter(f => f.endsWith('.js'));
+  for (const file of files) {
+    const filePath = path.join(fullPath, file);
+    const command = require(filePath);
+    if (dir === 'slashcommands' && 'data' in command && 'execute' in command) {
+      collection.set(command.data.name, command);
+    } else if (dir === 'prefixcommands' && 'name' in command && 'execute' in command) {
+      collection.set(command.name, command);
+    }
   }
-}
+};
 
-const eventsPath = path.join(__dirname, 'events');
-const eventFiles = fs.readdirSync(eventsPath).filter(f => f.endsWith('.js'));
+loadCommands('slashcommands', client.commands);
+loadCommands('prefixcommands', client.prefixCommands);
 
-for (const file of eventFiles) {
-  const filePath = path.join(eventsPath, file);
-  const event = require(filePath);
-  if (event.once) {
-    client.once(event.name, (...args) => event.execute(...args));
-  } else {
-    client.on(event.name, (...args) => event.execute(...args));
+const loadEvents = () => {
+  const eventsPath = path.join(__dirname, 'events');
+  const eventFiles = fs.readdirSync(eventsPath).filter(f => f.endsWith('.js'));
+  
+  for (const file of eventFiles) {
+    const filePath = path.join(eventsPath, file);
+    const event = require(filePath);
+    if (event.once) {
+      client.once(event.name, (...args) => event.execute(...args));
+    } else {
+      client.on(event.name, (...args) => event.execute(...args));
+    }
   }
-}
+};
+
+loadEvents();
 
 client.login(process.env.DISCORD_TOKEN);
