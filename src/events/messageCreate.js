@@ -9,7 +9,9 @@ module.exports = {
     const commandName = args.shift().toLowerCase();
     
     const command = message.client.prefixCommands.get(commandName);
-    if (!command) return;
+    if (!command) {
+      return message.reply(`Unknown command: \`${commandName}\`. Type \`!help\` to see available commands.`);
+    }
     
     try {
       command.execute(message, args);
