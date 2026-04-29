@@ -16,9 +16,14 @@ const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
 
 (async () => {
   try {
-    console.log('Started refreshing application (/) commands.');
-    await rest.put(Routes.applicationCommands(process.env.CLIENT_ID), { body: commands });
-    console.log('Successfully reloaded application (/) commands.');
+    const route = process.env.GUILD_ID
+      ? Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.GUILD_ID)
+      : Routes.applicationCommands(process.env.CLIENT_ID);
+    const scope = process.env.GUILD_ID ? `guild ${process.env.GUILD_ID}` : 'global';
+
+    console.log(`Started refreshing ${scope} application (/) commands.`);
+    await rest.put(route, { body: commands });
+    console.log(`Successfully reloaded ${scope} application (/) commands.`);
   } catch (error) {
     console.error(error);
   }
