@@ -50,4 +50,7 @@ const loadEvents = () => {
 
 loadEvents();
 
-client.login(process.env.DISCORD_TOKEN);
+client.login(process.env.DISCORD_TOKEN).catch(error => {
+  console.error('Failed to log in:', error);
+  process.exitCode = 1;
+});
