@@ -35,6 +35,10 @@ loadCommands('prefixcommands', client.prefixCommands);
 
 const loadEvents = () => {
   const eventsPath = path.join(__dirname, 'events');
+  if (!fs.existsSync(eventsPath)) {
+    console.warn(`[WARNING] Events directory missing at ${eventsPath}. Auto-creating it.`);
+    fs.mkdirSync(eventsPath, { recursive: true });
+  }
   const eventFiles = fs.readdirSync(eventsPath).filter(f => f.endsWith('.js'));
   
   for (const file of eventFiles) {

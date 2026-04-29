@@ -5,6 +5,10 @@ const path = require('path');
 
 const commands = [];
 const commandsPath = path.join(__dirname, 'commands');
+if (!fs.existsSync(commandsPath)) {
+  console.warn(`[WARNING] Commands directory missing at ${commandsPath}. Auto-creating it.`);
+  fs.mkdirSync(commandsPath, { recursive: true });
+}
 const commandFiles = fs.readdirSync(commandsPath).filter(f => f.endsWith('.js'));
 
 for (const file of commandFiles) {
