@@ -4,7 +4,13 @@ const fs = require('fs');
 const path = require('path');
 
 const commands = [];
-const commandsPath = path.join(__dirname, 'commands');
+const commandsPath = path.join(__dirname, 'slashcommands');
+
+if (!fs.existsSync(commandsPath)) {
+  console.error(`Commands directory not found: ${commandsPath}`);
+  process.exit(1);
+}
+
 const commandFiles = fs.readdirSync(commandsPath).filter(f => f.endsWith('.js'));
 
 for (const file of commandFiles) {
