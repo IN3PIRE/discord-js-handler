@@ -35,6 +35,10 @@ loadCommands('prefixcommands', client.prefixCommands);
 
 const loadEvents = () => {
   const eventsPath = path.join(__dirname, 'events');
+  if (!fs.existsSync(eventsPath)) {
+    console.warn('Warning: events directory not found.');
+    return;
+  }
   const eventFiles = fs.readdirSync(eventsPath).filter(f => f.endsWith('.js'));
   
   for (const file of eventFiles) {
