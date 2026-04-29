@@ -16,16 +16,23 @@ client.prefixCommands = new Collection();
 
 const loadCommands = (dir, collection) => {
   const fullPath = path.join(__dirname, dir);
-  if (!fs.existsSync(fullPath)) return;
+  if (!fs.existsSync(fullPath)) {
+    console.warn(`[Warning]: Directory ${dir} does not exist. Skipping...`);
+    return;
+  }
   
   const files = fs.readdirSync(fullPath).filter(f => f.endsWith('.js'));
   for (const file of files) {
     const filePath = path.join(fullPath, file);
-    const command = require(filePath);
-    if (dir === 'slashcommands' && 'data' in command && 'execute' in command) {
-      collection.set(command.data.name, command);
-    } else if (dir === 'prefixcommands' && 'name' in command && 'execute' in command) {
-      collection.set(command.name, command);
+    try {
+      const command = require(filePath);
+      if (dir === 'slashcommands' && 'data' in command && 'execute' in command) {
+        collection.set(command.data.name, command);
+      } else if (dir === 'prefixcommands' && 'name' in command && 'execute' in command) {
+        collection.set(command.name, command);
+      }
+    } catch (error) {
+      console.error(`[Error]: Failed to load command at ${file}:`, error.message);
     }
   }
 };
@@ -35,19 +42,31 @@ loadCommands('prefixcommands', client.prefixCommands);
 
 const loadEvents = () => {
   const eventsPath = path.join(__dirname, 'events');
+  if (!fs.existsSync(eventsPath)) {
+    console.warn(`[Warning]: Directory 'events' does not exist. Skipping...`);
+    return;
+  }
+
   const eventFiles = fs.readdirSync(eventsPath).filter(f => f.endsWith('.js'));
   
   for (const file of eventFiles) {
     const filePath = path.join(eventsPath, file);
-    const event = require(filePath);
-    if (event.once) {
-      client.once(event.name, (...args) => event.execute(...args));
-    } else {
-      client.on(event.name, (...args) => event.execute(...args));
+    try {
+      const event = require(filePath);
+      if (event.once) {
+        client.once(event.name, (...args) => event.execute(...args));
+      } else {
+        client.on(event.name, (...args) => event.execute(...args));
+      }
+    } catch (error) {
+      console.error(`[Error]: Failed to load event at ${file}:`, error.message);
     }
   }
 };
 
 loadEvents();
 
-client.login(process.env.DISCORD_TOKEN);
+// Item #4: Handle potential login rejections (Good bonus for the maintainer!)
+client.login(process.env.DISCORD_TOKEN).catch(error => {
+  console.error('[Error]: Discord login failed:', error.message);
+});
