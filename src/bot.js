@@ -21,11 +21,15 @@ const loadCommands = (dir, collection) => {
   const files = fs.readdirSync(fullPath).filter(f => f.endsWith('.js'));
   for (const file of files) {
     const filePath = path.join(fullPath, file);
-    const command = require(filePath);
-    if (dir === 'slashcommands' && 'data' in command && 'execute' in command) {
-      collection.set(command.data.name, command);
-    } else if (dir === 'prefixcommands' && 'name' in command && 'execute' in command) {
-      collection.set(command.name, command);
+    try {
+      const command = require(filePath);
+      if (dir === 'slashcommands' && 'data' in command && 'execute' in command) {
+        collection.set(command.data.name, command);
+      } else if (dir === 'prefixcommands' && 'name' in command && 'execute' in command) {
+        collection.set(command.name, command);
+      }
+    } catch (error) {
+      console.error(`Error loading command at ${filePath}:`, error);
     }
   }
 };
@@ -35,19 +39,30 @@ loadCommands('prefixcommands', client.prefixCommands);
 
 const loadEvents = () => {
   const eventsPath = path.join(__dirname, 'events');
+  if (!fs.existsSync(eventsPath)) {
+    console.warn('Warning: events directory not found. No events will be loaded.');
+    return;
+  }
   const eventFiles = fs.readdirSync(eventsPath).filter(f => f.endsWith('.js'));
   
   for (const file of eventFiles) {
     const filePath = path.join(eventsPath, file);
-    const event = require(filePath);
-    if (event.once) {
-      client.once(event.name, (...args) => event.execute(...args));
-    } else {
-      client.on(event.name, (...args) => event.execute(...args));
+    try {
+      const event = require(filePath);
+      if (event.once) {
+        client.once(event.name, (...args) => event.execute(...args));
+      } else {
+        client.on(event.name, (...args) => event.execute(...args));
+      }
+    } catch (error) {
+      console.error(`Error loading event at ${filePath}:`, error);
     }
   }
 };
 
 loadEvents();
 
-client.login(process.env.DISCORD_TOKEN);
+client.login(process.env.DISCORD_TOKEN).catch(error => {
+  console.error('Failed to log in:', error);
+  process.exit(1);
+});
