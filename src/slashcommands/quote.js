@@ -36,7 +36,7 @@ module.exports = {
 
       await interaction.editReply({ embeds: [embed] });
     } catch (error) {
-      clearTimeout;
+      clearTimeout(timeout);
       console.error('Quote command error:', error);
       await interaction.editReply({
         content: '❌ Failed to fetch a quote. Please try again later.',
