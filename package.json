@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node src/bot.js",
     "dev": "node --watch src/bot.js",
-    "deploy": "node src/deploy-commands.js"
+    "deploy": "node src/deploy-commands.js",
+    "deploy:guild": "node scripts/deploy-guild.js"
   },
   "dependencies": {
     "discord.js": "^14.14.1",
