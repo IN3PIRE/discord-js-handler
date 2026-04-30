@@ -1,23 +1,23 @@
 <div align="center">
-  <br>
-  <p>
-    <img src="https://discord.js.org/static/logo.svg" alt="Discord.js" width="150" />
-  </p>
-  <h1>🤖 Discord.js Handler</h1>
-  <p>Production-ready Discord.js v14 bot handler with slash commands, event system, and modular architecture</p>
-  <br>
-  <p>
-    <img src="https://img.shields.io/badge/npm-v14.14.1-blue?style=flat-square&logo=npm" alt="NPM Version" />
-    <img src="https://img.shields.io/badge/discord.js-v14.14.1-5865F2?style=flat-square&logo=discord" alt="Discord.js Version" />
-    <img src="https://img.shields.io/github/license/IN3PIRE/discord-js-handler?style=flat-square&color=green" alt="License" />
-    <img src="https://img.shields.io/github/stars/IN3PIRE/discord-js-handler?style=flat-square&color=yellow" alt="Stars" />
-  </p>
-  <p>
-    <a href="#quick-start">⚡ Quick Start</a> •
-    <a href="#commands">🎯 Commands</a> •
-    <a href="#adding-new-commands">➕ Add Commands</a> •
-    <a href="#contributing">🤝 Contribute</a>
-  </p>
+ <br>
+ <p>
+ <img src="https://discord.js.org/static/logo.svg" alt="Discord.js" width="150" />
+ </p>
+ <h1>🤖 Discord.js Handler</h1>
+ <p>Production-ready Discord.js v14 bot handler with slash commands, event system, and modular architecture</p>
+ <br>
+ <p>
+ <img src="https://img.shields.io/badge/npm-v14.14.1-blue?style=flat-square&logo=npm" alt="NPM Version" />
+ <img src="https://img.shields.io/badge/discord.js-v14.14.1-5865F2?style=flat-square&logo=discord" alt="Discord.js Version" />
+ <img src="https://img.shields.io/github/license/IN3PIRE/discord-js-handler?style=flat-square&color=green" alt="License" />
+ <img src="https://img.shields.io/github/stars/IN3PIRE/discord-js-handler?style=flat-square&color=yellow" alt="Stars" />
+ </p>
+ <p>
+ <a href="#quick-start">⚡ Quick Start</a> •
+ <a href="#commands">🎯 Commands</a> •
+ <a href="#adding-new-commands">➕ Add Commands</a> •
+ <a href="#contributing">🤝 Contribute</a>
+ </p>
 </div>
 
 <br>
@@ -107,14 +107,14 @@ Create a new file in **`src/slashcommands/`**:
 const { SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
-  data: new SlashCommandBuilder()
-    .setName('commandname')
-    .setDescription('Description of what this command does'),
-  
-  async execute(interaction) {
-    // Your command logic here
-    await interaction.reply('Command executed successfully!');
-  },
+ data: new SlashCommandBuilder()
+ .setName('commandname')
+ .setDescription('Description of what this command does'),
+ 
+ async execute(interaction) {
+ // Your command logic here
+ await interaction.reply('Command executed successfully!');
+ },
 };
 ```
 
@@ -124,13 +124,13 @@ Create a new file in **`src/prefixcommands/`**:
 
 ```javascript
 module.exports = {
-  name: 'commandname',
-  description: 'Description of what this command does',
-  
-  execute(message, args) {
-    // Your command logic here
-    message.reply('Command executed successfully!');
-  },
+ name: 'commandname',
+ description: 'Description of what this command does',
+ 
+ execute(message, args) {
+ // Your command logic here
+ message.reply('Command executed successfully!');
+ },
 };
 ```
 
@@ -140,13 +140,13 @@ Create a new file in **`src/events/`**:
 
 ```javascript
 module.exports = {
-  name: 'eventName', // Event name from Discord.js
-  once: false, // true = execute once, false = execute on every event
-  
-  execute(...args) {
-    // Your event logic here
-    console.log('Event triggered:', this.name);
-  },
+ name: 'eventName', // Event name from Discord.js
+ once: false, // true = execute once, false = execute on every event
+ 
+ execute(...args) {
+ // Your event logic here
+ console.log('Event triggered:', this.name);
+ },
 };
 ```
 
@@ -173,15 +173,15 @@ npm install
 ```
 discord-js-handler/
 ├── src/
-│   ├── events/           # Event handlers
-│   ├── prefixcommands/   # Prefix-based commands
-│   ├── slashcommands/    # Slash commands
-│   ├── deploy-commands.js # Command deployment script
-│   └── index.js          # Main bot file
-├── .env.example        # Environment template
-├── .gitignore           # Git ignore rules
-├── package.json         # Dependencies and scripts
-└── README.md            # Documentation
+│ ├── events/ # Event handlers
+│ ├── prefixcommands/ # Prefix-based commands
+│ ├── slashcommands/ # Slash commands
+│ ├── deploy-commands.js # Command deployment script
+│ └── index.js # Main bot file
+├── .env.example # Environment template
+├── .gitignore # Git ignore rules
+├── package.json # Dependencies and scripts
+└── README.md # Documentation
 ```
 
 ## 🤝 Contributing
@@ -214,6 +214,18 @@ We love your input! We want to make contributing as easy and transparent as poss
 - 👤 Verifies human contributors
 - 🫂 Makes you part of our community
 
+## 🏆 Top Contributors
+
+| Rank | Contributor | Commits | Community Status |
+|------|-------------|---------|------------------|
+| 🥇 | **TrivCodez** | 13+ | Project Founder & Maintainer |
+| 🥈 | **Ramanand-Shirbhate** | 2 | Core Contributor |
+| 🥉 | **KunalTiwari-git** | 2 | Active Contributor |
+| 4 | **dromero14521** | 1 | Bug Fixer |
+| 5 | **ixhxpns** | 1 | Guild Deploy Script |
+
+*Based on recent commit history. Updated automatically.*
+
 ## 📜 License
 
 This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
@@ -225,9 +237,9 @@ If you like this project, please give it a ⭐ star!
 ---
 
 <div align="center">
-  <p>Made with ❤️ by the IN3PIRE Team</p>
-  <p>
-    <a href="https://github.com/IN3PIRE">View our other projects</a> •
-    <a href="https://discord.gg">Join our Discord</a>
-  </p>
+ <p>Made with ❤️ by the IN3PIRE Team</p>
+ <p>
+ <a href="https://github.com/IN3PIRE">View our other projects</a> •
+ <a href="https://discord.gg">Join our Discord</a>
+ </p>
 </div>
