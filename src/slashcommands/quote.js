@@ -8,29 +8,38 @@ module.exports = {
     try {
       await interaction.deferReply();
 
-      const response = await fetch('https://api.quotable.io/random');
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 5000);
+
+      const response = await fetch('https://api.quotable.io/random', {
+        signal: controller.signal,
+      });
+      clearTimeout(timeout);
+
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
       const data = await response.json();
 
-      // Handle unexpected API response
-      if (!data.content || !data.author) {
+      if (!data?.content || !data?.author) {
         return await interaction.editReply({
-          content: 'Received an unexpected response from the API. Please try again.',
+          content: '❌ Quote API returned unexpected format. Please try again.',
           ephemeral: true,
         });
       }
 
       const embed = new EmbedBuilder()
-        .setTitle('Random Quote')
-        .setDescription(`"${data.content}"`)
-        .setFooter({ text: `— ${data.author}` })
         .setColor(0x5865F2)
+        .setTitle('📜 Random Quote')
+        .setDescription(`"${data.content}"`)
+        .setFooter({ text: `— ${data.author} · Requested by ${interaction.user.tag}` })
         .setTimestamp();
 
       await interaction.editReply({ embeds: [embed] });
     } catch (error) {
+      clearTimeout;
       console.error('Quote command error:', error);
       await interaction.editReply({
-        content: 'Failed to fetch a quote. Please try again later.',
+        content: '❌ Failed to fetch a quote. Please try again later.',
         ephemeral: true,
       });
     }
