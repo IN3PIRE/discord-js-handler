@@ -1,4 +1,4 @@
-const { checkCooldown } = require('../utils/cooldown');
+const { checkCooldown, setCooldown } = require('../utils/cooldown');
 
 module.exports = {
   name: 'interactionCreate',
@@ -8,17 +8,21 @@ module.exports = {
     const command = interaction.client.commands.get(interaction.commandName);
     if (!command) return;
 
-    // Cooldown check
-    const remaining = checkCooldown(interaction.user.id, interaction.commandName);
-    if (remaining) {
-      return interaction.reply({
-        content: `Please wait ${remaining}s before using \`/${interaction.commandName}\` again.`,
-        ephemeral: true,
-      });
-    }
-
     try {
+      // Check cooldown without setting it yet
+      const remaining = checkCooldown(interaction.user.id, interaction.commandName, false);
+      if (remaining) {
+        return await interaction.reply({
+          content: `Please wait ${remaining}s before using \`/${interaction.commandName}\` again.`,
+          ephemeral: true,
+        });
+      }
+
+      // Execute command first
       await command.execute(interaction);
+
+      // Only set cooldown after successful execution
+      setCooldown(interaction.user.id, interaction.commandName);
     } catch (error) {
       console.error(`[Error executing ${interaction.commandName}]:`, error);
 

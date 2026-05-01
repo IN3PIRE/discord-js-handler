@@ -1,5 +1,5 @@
 const prefix = '!';
-const { checkCooldown } = require('../utils/cooldown');
+const { checkCooldown, setCooldown } = require('../utils/cooldown');
 
 module.exports = {
   name: 'messageCreate',
@@ -14,14 +14,17 @@ module.exports = {
       return message.reply(`Unknown command: \`${commandName}\`. Type \`!help\` to see available commands.`);
     }
 
-    // Cooldown check
-    const remaining = checkCooldown(message.author.id, commandName);
+    // Check cooldown without setting it yet
+    const remaining = checkCooldown(message.author.id, commandName, false);
     if (remaining) {
-      return message.reply(`Please wait ${remaining}s before using \`!${commandName}\` again.`);
+      return message.reply(`Please wait ${remaining}s before using \`!${commandName}\` again.`)
+        .then(reply => setTimeout(() => reply.delete().catch(() => {}), 5000));
     }
 
     try {
       command.execute(message, args);
+      // Only set cooldown after successful execution
+      setCooldown(message.author.id, commandName);
     } catch (error) {
       console.error(error);
       message.reply('There was an error executing that command!');
