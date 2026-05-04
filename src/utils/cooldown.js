@@ -1,5 +1,10 @@
+let COOLDOWN_SECONDS = parseInt(process.env.COMMAND_COOLDOWN || 3, 10);
+if (isNaN(COOLDOWN_SECONDS) || COOLDOWN_SECONDS <= 0) {
+  console.warn('[Warning]: Invalid COMMAND_COOLDOWN value, defaulting to 3 seconds');
+  COOLDOWN_SECONDS = 3;
+}
+
 const cooldowns = new Map();
-const COOLDOWN_SECONDS = process.env.COMMAND_COOLDOWN || 3;
 
 // Cleanup expired entries every minute to prevent memory leak
 setInterval(() => {
@@ -11,14 +16,7 @@ setInterval(() => {
   }
 }, 60000);
 
-/**
- * Checks if a user is on cooldown.
- * @param {string} userId - The Discord user ID
- * @param {string} commandName - The command name
- * @param {boolean} setOnPass - Whether to set cooldown immediately on pass
- * @returns {string|null} - Remaining seconds if on cooldown, null if not
- */
-function checkCooldown(userId, commandName, setOnPass = true) {
+function checkCooldown(userId, commandName) {
   const key = `${userId}-${commandName}`;
   const now = Date.now();
 
@@ -26,13 +24,10 @@ function checkCooldown(userId, commandName, setOnPass = true) {
     const lastUsed = cooldowns.get(key);
     const elapsed = (now - lastUsed) / 1000;
     if (elapsed < COOLDOWN_SECONDS) {
-      return (COOLDOWN_SECONDS - elapsed).toFixed(1);
+      return Math.ceil(COOLDOWN_SECONDS - elapsed);
     }
   }
 
-  if (setOnPass) {
-    cooldowns.set(key, now);
-  }
   return null;
 }
 

@@ -9,8 +9,7 @@ module.exports = {
     if (!command) return;
 
     try {
-      // Check cooldown without setting it yet
-      const remaining = checkCooldown(interaction.user.id, interaction.commandName, false);
+      const remaining = checkCooldown(interaction.user.id, interaction.commandName);
       if (remaining) {
         return await interaction.reply({
           content: `Please wait ${remaining}s before using \`/${interaction.commandName}\` again.`,
@@ -18,11 +17,10 @@ module.exports = {
         });
       }
 
-      // Execute command first
-      await command.execute(interaction);
-
-      // Only set cooldown after successful execution
+      // Set cooldown before executing to prevent bypass
       setCooldown(interaction.user.id, interaction.commandName);
+
+      await command.execute(interaction);
     } catch (error) {
       console.error(`[Error executing ${interaction.commandName}]:`, error);
 

@@ -14,17 +14,17 @@ module.exports = {
       return message.reply(`Unknown command: \`${commandName}\`. Type \`!help\` to see available commands.`);
     }
 
-    // Check cooldown without setting it yet
-    const remaining = checkCooldown(message.author.id, commandName, false);
+    const remaining = checkCooldown(message.author.id, commandName);
     if (remaining) {
       return message.reply(`Please wait ${remaining}s before using \`!${commandName}\` again.`)
         .then(reply => setTimeout(() => reply.delete().catch(() => {}), 5000));
     }
 
+    // Set cooldown before executing to prevent bypass
+    setCooldown(message.author.id, commandName);
+
     try {
       command.execute(message, args);
-      // Only set cooldown after successful execution
-      setCooldown(message.author.id, commandName);
     } catch (error) {
       console.error(error);
       message.reply('There was an error executing that command!');
