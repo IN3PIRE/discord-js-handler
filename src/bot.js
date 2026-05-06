@@ -54,9 +54,21 @@ const loadEvents = () => {
     try {
       const event = require(filePath);
       if (event.once) {
-        client.once(event.name, (...args) => event.execute(...args));
+        client.once(event.name, async (...args) => {
+          try {
+            await event.execute(...args);
+          } catch (error) {
+            console.error(`[Error]: Event handler '${event.name}' threw an error:`, error);
+          }
+        });
       } else {
-        client.on(event.name, (...args) => event.execute(...args));
+        client.on(event.name, async (...args) => {
+          try {
+            await event.execute(...args);
+          } catch (error) {
+            console.error(`[Error]: Event handler '${event.name}' threw an error:`, error);
+          }
+        });
       }
     } catch (error) {
       console.error(`[Error]: Failed to load event at ${file}:`, error.message);
