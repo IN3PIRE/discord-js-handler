@@ -15,7 +15,10 @@ client.commands = new Collection();
 client.prefixCommands = new Collection();
 
 const loadCommands = (dir, collection) => {
-  const fullPath = path.join(__dirname, dir);
+  const fullPath = path.resolve(__dirname, dir);
+  if (!fullPath.startsWith(__dirname)) {
+    throw new Error('Invalid path: Directory traversal attempt detected');
+  }
   if (!fs.existsSync(fullPath)) {
     console.warn(`[Warning]: Directory ${dir} does not exist. Skipping...`);
     return;
