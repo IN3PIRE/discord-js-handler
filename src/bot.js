@@ -82,3 +82,12 @@ loadEvents();
 client.login(process.env.DISCORD_TOKEN).catch(error => {
   console.error('[Error]: Discord login failed:', error.message);
 });
+// Item #6: Graceful shutdown
+const shutdown = () => {
+  console.log('Shutting down gracefully...');
+  client.destroy();
+  process.exit(0);
+};
+
+process.on('SIGINT', shutdown);
+process.on('SIGTERM', shutdown);
