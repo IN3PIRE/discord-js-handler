@@ -1,6 +1,7 @@
 const logger = require('./utils/logger');
 require('dotenv').config();
 const { Client, GatewayIntentBits, Collection } = require('discord.js');
+const setupHealthCheck = require('./health');
 const fs = require('fs');
 const path = require('path');
 
@@ -78,6 +79,9 @@ const loadEvents = () => {
 };
 
 loadEvents();
+
+// Item #11: Start health check endpoint
+setupHealthCheck(client, process.env.PORT || 3000);
 
 // Item #4: Handle potential login rejections (Good bonus for the maintainer!)
 client.login(process.env.DISCORD_TOKEN).catch(error => {
