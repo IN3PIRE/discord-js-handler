@@ -22,5 +22,6 @@ const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
     logger.info('Successfully reloaded application (/) commands.');
   } catch (error) {
     logger.error(error);
+    process.exit(1);
   }
 })();
