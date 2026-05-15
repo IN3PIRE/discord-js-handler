@@ -1,3 +1,4 @@
+const { sanitizeInput } = require('../utils/sanitize');
 const { checkCooldown, setCooldown } = require('../utils/cooldown');
 
 module.exports = {
@@ -8,6 +9,15 @@ module.exports = {
     const command = interaction.client.commands.get(interaction.commandName);
     if (!command) return;
 
+    // Sanitize string inputs automatically
+    if (interaction.options && typeof interaction.options.data !== 'undefined') {
+      for (const option of interaction.options.data) {
+        if (option.type === 3 && typeof option.value === 'string') { // STRING type
+          option.value = sanitizeInput(option.value);
+        }
+      }
+    }
+    
     try {
       const remaining = checkCooldown(interaction.user.id, interaction.commandName);
       if (remaining) {
