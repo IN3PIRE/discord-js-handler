@@ -1,3 +1,4 @@
+const logger = require('../utils/logger');
 const { checkCooldown, setCooldown } = require('../utils/cooldown');
 
 module.exports = {
@@ -22,7 +23,7 @@ module.exports = {
 
       await command.execute(interaction);
     } catch (error) {
-      console.error(`[Error executing ${interaction.commandName}]:`, error);
+      logger.error(`[Error executing ${interaction.commandName}]:`, error);
 
       if (interaction.replied || interaction.deferred) {
         await interaction.followUp({

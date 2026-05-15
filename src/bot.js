@@ -1,3 +1,4 @@
+const logger = require('./utils/logger');
 require('dotenv').config();
 const { Client, GatewayIntentBits, Collection } = require('discord.js');
 const setupHealthCheck = require('./health');
@@ -18,7 +19,7 @@ client.prefixCommands = new Collection();
 const loadCommands = (dir, collection) => {
   const fullPath = path.join(__dirname, dir);
   if (!fs.existsSync(fullPath)) {
-    console.warn(`[Warning]: Directory ${dir} does not exist. Skipping...`);
+    logger.warn(`[Warning]: Directory ${dir} does not exist. Skipping...`);
     return;
   }
   
@@ -33,7 +34,7 @@ const loadCommands = (dir, collection) => {
         collection.set(command.name, command);
       }
     } catch (error) {
-      console.error(`[Error]: Failed to load command at ${file}:`, error.message);
+      logger.error(`[Error]: Failed to load command at ${file}:`, error.message);
     }
   }
 };
@@ -44,7 +45,7 @@ loadCommands('prefixcommands', client.prefixCommands);
 const loadEvents = () => {
   const eventsPath = path.join(__dirname, 'events');
   if (!fs.existsSync(eventsPath)) {
-    console.warn(`[Warning]: Directory 'events' does not exist. Skipping...`);
+    logger.warn(`[Warning]: Directory 'events' does not exist. Skipping...`);
     return;
   }
 
@@ -59,7 +60,7 @@ const loadEvents = () => {
           try {
             await event.execute(...args);
           } catch (error) {
-            console.error(`[Error]: Event handler '${event.name}' threw an error:`, error);
+            logger.error(`[Error]: Event handler '${event.name}' threw an error:`, error);
           }
         });
       } else {
@@ -67,12 +68,12 @@ const loadEvents = () => {
           try {
             await event.execute(...args);
           } catch (error) {
-            console.error(`[Error]: Event handler '${event.name}' threw an error:`, error);
+            logger.error(`[Error]: Event handler '${event.name}' threw an error:`, error);
           }
         });
       }
     } catch (error) {
-      console.error(`[Error]: Failed to load event at ${file}:`, error.message);
+      logger.error(`[Error]: Failed to load event at ${file}:`, error.message);
     }
   }
 };
@@ -84,5 +85,5 @@ setupHealthCheck(client, process.env.PORT || 3000);
 
 // Item #4: Handle potential login rejections (Good bonus for the maintainer!)
 client.login(process.env.DISCORD_TOKEN).catch(error => {
-  console.error('[Error]: Discord login failed:', error.message);
+  logger.error('[Error]: Discord login failed:', error.message);
 });
