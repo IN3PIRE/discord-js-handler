@@ -86,7 +86,20 @@ loadEvents();
 // Item #11: Start health check endpoint
 setupHealthCheck(client, process.env.PORT || 3000);
 
-// Item #4: Handle potential login rejections (Good bonus for the maintainer!)
+// Item #2: Graceful shutdown handlers
+process.on('SIGINT', () => {
+  logger.info('[Shutdown]: Received SIGINT. Cleaning up...');
+  client.destroy();
+  process.exit(0);
+});
+
+process.on('SIGTERM', () => {
+  logger.info('[Shutdown]: Received SIGTERM. Cleaning up...');
+  client.destroy();
+  process.exit(0);
+});
+
+// Item #4: Handle potential login rejections
 client.login(process.env.DISCORD_TOKEN).catch(error => {
   logger.error('[Error]: Discord login failed:', error.message);
 });
