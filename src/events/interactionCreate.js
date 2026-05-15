@@ -1,5 +1,7 @@
 const logger = require('../utils/logger');
 const { checkCooldown, setCooldown } = require('../utils/cooldown');
+const { sanitizeInput } = require('../utils/sanitize');
+const { validatePermissions } = require('../middleware/permissions');
 
 module.exports = {
   name: 'interactionCreate',
@@ -8,6 +10,18 @@ module.exports = {
 
     const command = interaction.client.commands.get(interaction.commandName);
     if (!command) return;
+
+    // Sanitize string inputs automatically
+    if (interaction.options && typeof interaction.options.data !== 'undefined') {
+      for (const option of interaction.options.data) {
+        if (option.type === 3 && typeof option.value === 'string') { // STRING type
+          option.value = sanitizeInput(option.value);
+        }
+      }
+    }
+
+    // Validate permissions
+    if (!validatePermissions(interaction, command)) return;
 
     try {
       const remaining = checkCooldown(interaction.user.id, interaction.commandName);
