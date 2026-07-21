@@ -4,3 +4,5 @@ node_modules/
 *.sqlite
 .DS_Store
 package-lock.json
+data/
+data-archive/

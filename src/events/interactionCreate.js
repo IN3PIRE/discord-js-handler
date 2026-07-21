@@ -2,6 +2,7 @@ const logger = require('../utils/logger');
 const { checkCooldown, setCooldown } = require('../utils/cooldown');
 const { sanitizeInput } = require('../utils/sanitize');
 const { validatePermissions } = require('../middleware/permissions');
+const { recordCommand } = require('../utils/statsCollector');
 
 module.exports = {
   name: 'interactionCreate',
@@ -23,6 +24,8 @@ module.exports = {
     // Validate permissions
     if (!validatePermissions(interaction, command)) return;
 
+    const startTime = Date.now();
+
     try {
       const remaining = checkCooldown(interaction.user.id, interaction.commandName);
       if (remaining) {
@@ -36,7 +39,10 @@ module.exports = {
       setCooldown(interaction.user.id, interaction.commandName);
 
       await command.execute(interaction);
+
+      recordCommand(interaction.commandName, interaction.user.id, Date.now() - startTime, true);
     } catch (error) {
+      recordCommand(interaction.commandName, interaction.user.id, Date.now() - startTime, false);
       logger.error(`[Error executing ${interaction.commandName}]:`, error);
 
       if (interaction.replied || interaction.deferred) {
